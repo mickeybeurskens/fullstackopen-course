@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
 
-const ShowWeather = ({countries}) => {
-  if (countries.length === 1){
+const ShowWeather = ({countries, weatherInfo}) => {
+  if (countries.length === 1 && typeof weatherInfo.main !== 'undefined'){
     return <div>
       <h1>Weather in {countries[0].name.common}</h1>
+      <p>temperature: {weatherInfo.main.temp}</p>
+      <p>wind: {weatherInfo.wind.speed}</p>
     </div>
   }
   return <></>
@@ -24,7 +26,7 @@ const ShowCountryStats = (countryDetails) => {
   </div>
 }
 
-const ShowSearchResult = ({countries, setSearchField}) => {
+const ShowSearchResult = ({countries, setSearchField, getWeather}) => {
   if (countries.length > 10){
     return <p>Too many matches, be more specific</p>
   } else if (countries.length > 1) {
@@ -33,24 +35,32 @@ const ShowSearchResult = ({countries, setSearchField}) => {
       <button onClick={()=>setSearchField(c.name.common)}>pick</button>
     </p>)
   } else if (countries.length === 1){
+    getWeather(countries[0].name.common)
     return ShowCountryStats(countries[0])
   }
 
-  return <p>No country found</p>
+  return <></>
 }
 
 const App = () => {
   const [searchField, setSearchField] = useState('')
   const [countryData, setAllCountries] = useState([])
+  const [weatherInfo, setWeatherInfo] = useState('')
 
-  const getCountry = () => {
+  const getCountryData = () => {
     axios
       .get('https://restcountries.com/v3.1/all')
       .then(responce => setAllCountries(responce.data))
   }
-  useEffect(getCountry, [])
+  useEffect(getCountryData, [])
 
   const searchInput = (event) => setSearchField(event.target.value)
+  const getWeatherInfo = (cityName) => {
+    const APIKey = process.env.REACT_APP_API_KEY
+    axios
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${APIKey}`)
+      .then(responce => setWeatherInfo(responce.data))
+  }
   const getFilteredCountries = () => {
     if (searchField.length!==0){
       return countryData.filter((entry) =>  entry.name.common.match(searchField))
@@ -58,10 +68,18 @@ const App = () => {
     return countryData
   }
 
+  const getWeatherIfNew = (countryName) => {
+    if (countryName !== weatherInfo.name){
+      if (countryData.find(data => data.name.common === countryName)){
+        getWeatherInfo(countryName)
+      }
+    }
+  }
+
   return <div>
     <p>Find countries: <input value={searchField} onChange={searchInput}/></p>
-    <ShowSearchResult countries={getFilteredCountries()} setSearchField={setSearchField}/>
-    <ShowWeather countries={getFilteredCountries()}/>
+    <ShowSearchResult countries={getFilteredCountries()} setSearchField={setSearchField} getWeather={getWeatherIfNew}/>
+    <ShowWeather countries={getFilteredCountries()} weatherInfo={weatherInfo}/>
   </div>
 }
 
