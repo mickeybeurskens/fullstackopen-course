@@ -6,12 +6,12 @@ const getAll = () => {
     return axios.get(baseUrl).then(responce => responce.data)
 }
 
-const create = (note) => {
-    return axios.post(baseUrl, note).then(responce => responce.data)
+const create = (person) => {
+    return axios.post(baseUrl, person).then(responce => responce.data)
 }
 
-const update = (id, note) => {
-    return axios.put(`${baseUrl}/${id}`, note).then(responce => responce.data)
+const update = (person) => {
+    return axios.put(`${baseUrl}/${person.id}`, person).then(responce => responce.data)
 }
 
 const remove = (id) => {
