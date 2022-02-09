@@ -1,5 +1,4 @@
 const blogsRoute = require('express').Router()
-const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -16,11 +15,10 @@ blogsRoute.get('/', async (request, response) => {
 })
 
 blogsRoute.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return tokenError(response)
+  if (!request.user.id) {
+    return tokenError(request)
   }
-  const user = await User.findById(decodedToken.id)
+  const user = await User.findById(request.user.id)
   const blog = new Blog({ ...request.body, user: user.id })
 
   const resultBlog = await blog.save()
@@ -28,17 +26,16 @@ blogsRoute.post('/', async (request, response) => {
 })
 
 blogsRoute.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  const id = request.params.id
-  if (!decodedToken.id) {
-    return tokenError(response)
+  if (!request.user.id) {
+    return tokenError(request)
   }
-  const blog = await Blog.findById(id)
-  if (decodedToken.id.toString() !== blog.user.toString()) {
+  const blogId = request.params.id
+  const blog = await Blog.findById(blogId)
+  if (request.user.id.toString() !== blog.user.toString()) {
     response.status(401)
       .json({ error: 'You cannot delete blogs that are not yours' })
   }
-  await Blog.findByIdAndDelete(id)
+  await Blog.findByIdAndDelete(blogId)
   response.status(204).end()
 })
 
