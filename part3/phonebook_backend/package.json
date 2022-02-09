@@ -14,8 +14,7 @@
   "author": "Mickey Beurskens",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.15",
-    "postman": "^0.2.0"
+    "nodemon": "^2.0.15"
   },
   "dependencies": {
     "express": "^4.17.2"
