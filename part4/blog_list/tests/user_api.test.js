@@ -1,32 +1,19 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const testUtils = require('./test_utils')
-const Blog = require('../models/blog')
-const User = require('../models/user')
+const userTestUtils = require('./user_test_utils')
 const api = supertest(app)
 
-
-const initUsers = async () => {
-  await User.deleteMany({})
-  const blogs = await testUtils.getBlogs(api)
-  const blogObjects = testUtils.initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(note => note.save())
-  await Promise.all(promiseArray)
-}
-
-const initBlogs = async () => {
-  await Blog.deleteMany({})
-  const blogObjects = testUtils.initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(note => note.save())
-  await Promise.all(promiseArray)
-}
-
 beforeEach(async () => {
+  await userTestUtils.resetUserDB(api)
 })
 
-describe('blog /api/blogs', () => {
-  
+describe('users /api/blogs', () => {
+  test('adding users', async () => {
+    const usersInitial = await userTestUtils.getUsersFromDB(api)
+    const usersFromDB = await userTestUtils.getInitialUsers(api)
+    expect(usersFromDB.length).toBe(usersInitial.length)
+  })
 })
 
 afterAll(async () => {
