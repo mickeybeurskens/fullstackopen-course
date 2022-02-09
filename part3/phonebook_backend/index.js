@@ -30,7 +30,11 @@ let persons = [
     }
 ]
 
-app.get('/persons', (request, response) => {
+app.get('/', (request, response) => {
+    response.send('Hi')
+})
+
+app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
