@@ -40,7 +40,11 @@ const checkIfContains = (returnedBlogs, referenceBlogs) => {
   })
 }
 
-describe('blog api', () => {
+const getBlogs = async () => {
+  return await (await api.get('/api/blogs')).body
+}
+
+describe('blog /api/blogs', () => {
   test('blogs are returned as json format', async () => {
     await api
       .get('/api/blogs')
@@ -49,17 +53,17 @@ describe('blog api', () => {
   })
 
   test('first blog authors present', async () => {
-    const blogs = await (await api.get('/api/blogs')).body
+    const blogs = await getBlogs()
     checkIfContains(blogs, initialBlogs)
   })
 
   test('amount of blogs correct', async () => {
-    const blogs = await (await api.get('/api/blogs')).body
+    const blogs = await getBlogs()
     expect(blogs.length).toBe(initialBlogs.length)
   })
 
   test('id keyword is correct', async () => {
-    const blogs = await (await api.get('/api/blogs')).body
+    const blogs = await getBlogs()
     blogs.map(blog => {
       expect(blog.id).toBeDefined()
     })
@@ -73,7 +77,7 @@ describe('blog api', () => {
       likes: 1000
     })
     await newBlog.save()
-    const blogs = await (await api.get('/api/blogs')).body
+    const blogs = await getBlogs()
     expect(blogs.length).toBe(initialBlogs.length + 1)
     checkIfContains(blogs, initialBlogs.concat(newBlog))
   })
@@ -86,7 +90,7 @@ describe('blog api', () => {
       url: 'unluckyluck.com'
     })
     await newBlog.save()
-    const blogs = await(await api.get('/api/blogs')).body
+    const blogs = await getBlogs()
     expect(blogs[0].likes).toBe(0)
   })
 
@@ -97,6 +101,16 @@ describe('blog api', () => {
     }
     const response = await api.post('/api/blogs', faultyBlog)
     expect(await response.status).toBe(400)
+  })
+})
+
+describe('blog /api/blogs/id', () => {
+  test('deleting by id', async () => {
+    const blogs = await getBlogs()
+    const deleteId = blogs[0].id
+    await api.delete(`/api/blogs/${deleteId}`)
+    const blogsDelete = await getBlogs()
+    expect(blogsDelete.map(b => b.id)).not.toContain(deleteId)
   })
 })
 
