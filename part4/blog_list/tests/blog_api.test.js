@@ -112,6 +112,16 @@ describe('blog /api/blogs/id', () => {
     const blogsDelete = await getBlogs()
     expect(blogsDelete.map(b => b.id)).not.toContain(deleteId)
   })
+
+  test('update likes on blog', async () => {
+    const blogs = await getBlogs()
+    const updateId = blogs[0].id
+    const newLikes = { likes: 300 }
+    await api.put(`/api/blogs/${updateId}`, newLikes)
+    const blogsUpdate = await getBlogs()
+    const updatedBlog = blogsUpdate.find(blog => blog.id === updateId)
+    expect(updatedBlog.likes).toBe(newLikes.likes)
+  })
 })
 
 afterAll(async () => {
