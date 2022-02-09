@@ -10,8 +10,6 @@ function getRandomInt(min, max) {
 
 
 const App = () => {
-  const [selected, setSelected] = useState(0)
-
   const anecdotes = [
     'If it hurts, do it more often',
     'Adding manpower to a late software project makes it later!',
@@ -21,15 +19,23 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
   ]
-  
-  const changeAnecdote = () => {
-    setSelected(getRandomInt(0, anecdotes.length-1))
+  const [selected, setSelected] = useState(getRandomInt(0, anecdotes.length-1))
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0))
+
+  const changeAnecdote = () => setSelected(getRandomInt(0, anecdotes.length-1))
+
+
+  const voteForAnecdote = (voteIndex) => {
+    const copy = {...points}
+    copy[voteIndex] += 1
+    setPoints(copy)
   }
 
   return (
     <div>
       <p>{anecdotes[selected]}</p>
       <p>
+        <Button clickCallback={() => voteForAnecdote(selected)} text="vote"/>
         <Button clickCallback={() => changeAnecdote()} text="next anecdote"/>
       </p>
     </div>
