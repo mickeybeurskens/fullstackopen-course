@@ -3,11 +3,28 @@ import React, { useState } from 'react'
 const Button = ({clickCallback, text}) =>
   <button onClick={clickCallback}>{text}</button>
 
+const CurrentVotes = ({points, voteIndex}) => <p>has {points[voteIndex]} votes</p>
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+function argMax(arr) {
+  if (arr.length === 0) {
+      return -1;
+  }
 
+  var max = arr[0];
+  var maxIndex = 0;
+
+  for (var i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+          maxIndex = i;
+          max = arr[i];
+      }
+  }
+
+  return maxIndex;
+}
 
 const App = () => {
   const anecdotes = [
@@ -23,21 +40,24 @@ const App = () => {
   const [points, setPoints] = useState(new Array(anecdotes.length).fill(0))
 
   const changeAnecdote = () => setSelected(getRandomInt(0, anecdotes.length-1))
-
-
   const voteForAnecdote = (voteIndex) => {
-    const copy = {...points}
+    const copy = [...points]
     copy[voteIndex] += 1
     setPoints(copy)
   }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
+      <CurrentVotes points={points} voteIndex={selected}/>
       <p>
         <Button clickCallback={() => voteForAnecdote(selected)} text="vote"/>
         <Button clickCallback={() => changeAnecdote()} text="next anecdote"/>
       </p>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[argMax(points)]}</p>
+      <CurrentVotes points={points} voteIndex={argMax(points)}/>
     </div>
   )
 }
