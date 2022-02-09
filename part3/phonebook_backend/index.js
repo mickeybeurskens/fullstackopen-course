@@ -1,8 +1,15 @@
 const { request } = require("express")
 const express = require("express")
-const app = express()
 var morgan = require('morgan')
+const app = express()
 
+morgan.token('person', function getPerson (request) {
+    return request.method === 'POST' ? JSON.stringify(request.body) : null
+})
+  
+
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
 let persons = [
     {
@@ -31,14 +38,6 @@ let persons = [
         "id": 5
     }
 ]
-
-morgan.token('person', function getPerson (request) {
-    return request.method === 'POST' ? JSON.stringify(request.body) : null
-})
-  
-
-app.use(express.json())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
 const InfoPage = () => {
     const infoString = `
