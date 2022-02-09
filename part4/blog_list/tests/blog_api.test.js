@@ -1,48 +1,13 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const Blog = require('../models/blog')
+const testUtils = require('./blog_test_utils')
 const api = supertest(app)
 
-const Blog = require('../models/blog')
-const initialBlogs = [
-  {
-    title: 'Fishing is the best',
-    author: 'Fishmaster 500',
-    url: 'fishing101.com',
-    likes: 4
-  },
-  {
-    title: 'Cat is the best',
-    author: 'Catmaster 2',
-    url: 'cats.com',
-    likes: 9
-  },
-  {
-    title: 'Dogs are awesome',
-    author: 'GoodBoy',
-    url: 'dogs.com',
-    likes: 25
-  },
-]
-
-
 beforeEach(async () => {
-  await Blog.deleteMany({})
-  const blogObjects = initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(note => note.save())
-  await Promise.all(promiseArray)
+  await testUtils.resetBlogDB()
 })
-
-const checkIfContains = (returnedBlogs, referenceBlogs) => {
-  const authors = returnedBlogs.map(r => r.author)
-  referenceBlogs.map(b => {
-    expect(authors).toContain(b.author)
-  })
-}
-
-const getBlogs = async () => {
-  return await (await api.get('/api/blogs')).body
-}
 
 describe('blog /api/blogs', () => {
   test('blogs are returned as json format', async () => {
@@ -53,17 +18,17 @@ describe('blog /api/blogs', () => {
   })
 
   test('first blog authors present', async () => {
-    const blogs = await getBlogs()
-    checkIfContains(blogs, initialBlogs)
+    const blogs = await testUtils.getBlogs(api)
+    testUtils.checkIfBlogsPresent(blogs, testUtils.initialBlogs)
   })
 
   test('amount of blogs correct', async () => {
-    const blogs = await getBlogs()
-    expect(blogs.length).toBe(initialBlogs.length)
+    const blogs = await testUtils.getBlogs(api)
+    expect(blogs.length).toBe(testUtils.initialBlogs.length)
   })
 
   test('id keyword is correct', async () => {
-    const blogs = await getBlogs()
+    const blogs = await testUtils.getBlogs(api)
     blogs.map(blog => {
       expect(blog.id).toBeDefined()
     })
@@ -77,9 +42,9 @@ describe('blog /api/blogs', () => {
       likes: 1000
     })
     await newBlog.save()
-    const blogs = await getBlogs()
-    expect(blogs.length).toBe(initialBlogs.length + 1)
-    checkIfContains(blogs, initialBlogs.concat(newBlog))
+    const blogs = await testUtils.getBlogs(api)
+    expect(blogs.length).toBe(testUtils.initialBlogs.length + 1)
+    testUtils.checkIfBlogsPresent(blogs, testUtils.initialBlogs.concat(newBlog))
   })
 
   test('no likes is zero likes', async () => {
@@ -90,7 +55,7 @@ describe('blog /api/blogs', () => {
       url: 'unluckyluck.com'
     })
     await newBlog.save()
-    const blogs = await getBlogs()
+    const blogs = await testUtils.getBlogs(api)
     expect(blogs[0].likes).toBe(0)
   })
 
@@ -106,19 +71,19 @@ describe('blog /api/blogs', () => {
 
 describe('blog /api/blogs/id', () => {
   test('deleting by id', async () => {
-    const blogs = await getBlogs()
+    const blogs = await testUtils.getBlogs(api)
     const deleteId = blogs[0].id
     await api.delete(`/api/blogs/${deleteId}`)
-    const blogsDelete = await getBlogs()
+    const blogsDelete = await testUtils.getBlogs(api)
     expect(blogsDelete.map(b => b.id)).not.toContain(deleteId)
   })
 
   test('update likes on blog', async () => {
-    const blogs = await getBlogs()
+    const blogs = await testUtils.getBlogs(api)
     const updateId = blogs[0].id
     const newLikes = { likes: 300 }
     await api.put(`/api/blogs/${updateId}`).send(newLikes)
-    const blogsUpdate = await getBlogs()
+    const blogsUpdate = await testUtils.getBlogs(api)
     const updatedBlog = blogsUpdate.find(blog => blog.id === updateId)
     expect(updatedBlog.likes).toBe(newLikes.likes)
   })

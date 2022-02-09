@@ -2,8 +2,15 @@ const usersRoute = require('express').Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
-const passWordValid = (password) => {
+const passWordValid = (password, response) => {
+  const minPassLength = 3
   if (!password){
+    response.status(401).send({ error: 'Password not valid' })
+    return false
+  }
+  if (password.length < minPassLength) {
+    response.status(401).send({ error: `Password ${password}
+      should be at least ${minPassLength} characters long` })
     return false
   }
   return true
@@ -18,9 +25,7 @@ usersRoute.post('/', async (request, response) => {
   const body = request.body
 
   const saltRounds = 10
-  if (!passWordValid(body.password)) {
-    response.status(401).send({ error: 'Password not valid' })
-  }
+  if (!passWordValid(body.password)) {return}
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
   const blog = new User({
