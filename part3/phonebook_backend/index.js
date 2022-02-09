@@ -14,41 +14,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :p
 app.use(cors())
 app.use(express.static('build'))
 
-let persons = [
-    {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-    },
-    {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-    },
-    {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-    },
-    {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-    },
-    {
-        "name": "Oden",
-        "number": "wa-no-ku-ni",
-        "id": 5
-    }
-]
-
-const InfoPage = () => {
-    const infoString = `
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${new Date().toString()}</p>`
-    return infoString
-}
-
 const handleNoNumber = (person, response) => {
     return response.status(404).json({
         error: `Number for person: ${person.number} is not a valid number`
@@ -108,7 +73,14 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    response.send(InfoPage())
+    Person.find({}).then(persons => {
+        const infoString = `
+            <p>Phonebook has info for ${persons.length} people</p>
+            <p>${new Date().toString()}</p>`
+        response.send(infoString)
+    }).catch(error => {
+        response.status(404).end()
+    })
 })
 
 const PORT = process.env.PORT || 3001
