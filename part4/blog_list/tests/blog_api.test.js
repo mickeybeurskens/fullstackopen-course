@@ -33,16 +33,6 @@ beforeEach(async () => {
   await Promise.all(promiseArray)
 })
 
-const getBlogs = async () => {
-  const r = await api.get('/api/blogs')
-  const blogs = await r.body
-  return blogs
-}
-const getBlogsLength = async () => {
-  const blogs = await getBlogs()
-  return blogs.length
-}
-
 const checkIfContains = (returnedBlogs, referenceBlogs) => {
   const authors = returnedBlogs.map(r => r.author)
   referenceBlogs.map(b => {
@@ -58,14 +48,15 @@ describe('blog api', () => {
       .expect('Content-Type', /application\/json/)
   })
   test('first blog authors present', async () => {
-    const blogs = await getBlogs()
+    const blogs = await (await api.get('/api/blogs')).body
     checkIfContains(blogs, initialBlogs)
   })
   test('amount of blogs correct', async () => {
-    expect(await getBlogsLength()).toBe(initialBlogs.length)
+    const blogs = await (await api.get('/api/blogs')).body
+    expect(blogs.length).toBe(initialBlogs.length)
   })
   test('id keyword is correct', async () => {
-    const blogs = await getBlogs()
+    const blogs = await (await api.get('/api/blogs')).body
     blogs.map(blog => {
       expect(blog.id).toBeDefined()
     })
@@ -78,8 +69,9 @@ describe('blog api', () => {
       likes: 1000
     })
     await newBlog.save()
-    expect(await getBlogsLength()).toBe(initialBlogs.length + 1)
-    checkIfContains(await getBlogs(), initialBlogs.concat(newBlog))
+    const blogs = await (await api.get('/api/blogs')).body
+    expect(blogs.length).toBe(initialBlogs.length + 1)
+    checkIfContains(blogs, initialBlogs.concat(newBlog))
   })
 })
 
