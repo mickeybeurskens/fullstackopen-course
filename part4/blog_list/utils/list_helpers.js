@@ -2,8 +2,8 @@ function argMax(array) {
   return [].reduce.call(array, (m, c, i, arr) => c > arr[m] ? i : m, 0)
 }
 
-const dummy = (blogs) => {
-  console.log(blogs)
+const dummy = () => {
+  // console.log(blogs)
   return 1
 }
 
