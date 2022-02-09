@@ -33,10 +33,10 @@ const AddForm = ({newName, newNumber, nameCallback, numberCallback, addPersonCal
   </>
 }
 
-const SuccesNotification = ({message}) => {
+const Notification = ({message, error=false}) => {
   if (message === null){ return null }
-  console.log('heck yea', message)
-  return <div className="succes">
+  const style = error ? 'error' : 'succes'
+  return <div className={style}>
     <p>{message}</p>
   </div>
 }
@@ -47,6 +47,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [succesMessage, setSuccesMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -56,8 +57,12 @@ const App = () => {
       if (confirm){
         personToAdd.name = newName
         personToAdd.number = newNumber
-        noteService.update(personToAdd).then(newPerson => setPersons(person => persons.map(person => person.id === newPerson.id ? newPerson: person)))
-        setSuccesWithTimeout(`Added ${newName}`)
+        noteService.update(personToAdd)
+          .then(newPerson => {
+            setPersons(person => persons.map(person => person.id === newPerson.id ? newPerson: person))
+            setSuccesWithTimeout(`Added ${newName}`)
+          })
+          .catch(() => setErrorWithTimeout(`${newName} not present anymore in the database`))
       }
       return
     } 
@@ -71,9 +76,13 @@ const App = () => {
   }
 
   const setSuccesWithTimeout = (message) => {
-    console.log('print', message)
     setSuccesMessage(message)
     setTimeout(() => setSuccesMessage(null), 5000)
+  }
+
+  const setErrorWithTimeout = (message) => {
+    setErrorMessage(message)
+    setTimeout(() => setErrorMessage(null), 5000)
   }
 
   const getFilteredPersons = (persons) => {
@@ -86,7 +95,8 @@ const App = () => {
   const deletePerson = (personDel) => {
     const delFlag = window.confirm(`Would you like to delete ${personDel.name}?`)
     if (delFlag){
-      noteService.remove(personDel.id).then(() => setPersons(persons.filter(person => person.id != personDel.id)))
+      noteService.remove(personDel.id)
+        .then(() => setPersons(persons.filter(person => person.id != personDel.id)))
     }
   }
 
@@ -104,7 +114,8 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter term={searchTerm} filterCallback={handleSearchInput}/>
-      <SuccesNotification message={succesMessage}/>
+      <Notification message={succesMessage}/>
+      <Notification message={errorMessage} error={true}/>
       <h1>add a new</h1>
       <AddForm name={newName} number={newNumber}
         nameCallback={handleNameInput}
