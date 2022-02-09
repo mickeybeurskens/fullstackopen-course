@@ -1,4 +1,3 @@
-const { request } = require('express')
 const express = require('express')
 const cors = require('cors')
 const Person = require('./models/mongo')
@@ -84,7 +83,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
-  Person.findByIdAndRemove(id).then(person => {
+  Person.findByIdAndRemove(id).then(() => {
     response.status(204).end()
   }).catch(error => next(error))
 })

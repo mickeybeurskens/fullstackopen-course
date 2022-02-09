@@ -18,4 +18,5 @@ const remove = (id) => {
     return axios.delete(`${baseUrl}/${id}`).then(responce => responce.data)
 }
 
-export default {getAll, create, update, remove}
+const personService =  {getAll, create, update, remove}
+export default personService
