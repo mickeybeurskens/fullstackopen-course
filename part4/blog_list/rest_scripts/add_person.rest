@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "How to catch a fish",
+  "author": "Me",
+  "url": "https://tocatchafish.com",
+  "likes": 3
+}
