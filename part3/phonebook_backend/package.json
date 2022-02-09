@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -r build && cd phonebook_frontend && npm run build && mv build .. && cd .."
+    "build:ui": "rm -r build && cd phonebook_frontend && npm run build && mv build .. && cd ..",
+    "lint": "eslint ."
   },
   "keywords": [
     "fullstackopen"
@@ -15,6 +16,7 @@
   "author": "Mickey Beurskens",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^8.8.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
