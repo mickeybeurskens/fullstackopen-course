@@ -65,5 +65,6 @@ module.exports = {
   checkIfBlogsPresent,
   resetBlogDB,
   addBlog,
-  addBlogWithNewUser
+  addBlogWithNewUser,
+  getNewUserObject
 }

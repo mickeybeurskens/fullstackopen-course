@@ -73,11 +73,21 @@ describe('blog', () => {
 
 describe('blog id api', () => {
   test('deleting by id', async () => {
-    const blogs = await blogUtils.getBlogs(api)
-    const deleteId = blogs[0].id
-    await api.delete(`/api/blogs/${deleteId}`)
+    const newBlog = {
+      title: 'The greatest song in the world',
+      author: 'The D',
+      url: 'rocketsauce.com',
+      likes: 1000
+    }
+    const newUser = blogUtils.getNewUserObject()
+    const response = await blogUtils.addBlog(api, newBlog, newUser)
+    const blogId = response.body.id
+    const loginInfo = await userUtils.getUserLoginResponse(api, newUser)
+    await api.delete(`/api/blogs/${blogId}`)
+      .set({ Authorization: `bearer ${loginInfo.token}` })
+      .expect(204)
     const blogsDelete = await blogUtils.getBlogs(api)
-    expect(blogsDelete.map(b => b.id)).not.toContain(deleteId)
+    expect(blogsDelete.map(b => b.id)).not.toContain(blogId)
   })
 
   test('update likes on blog', async () => {
