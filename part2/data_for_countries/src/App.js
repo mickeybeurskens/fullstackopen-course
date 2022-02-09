@@ -1,25 +1,38 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
 
-const ShowSearchResult = ({countries}) => {
-  if (countries.length > 10){
-    return <p>Too many matches, be more specific</p>
-  } else if (countries.length > 1) {
-    return countries.map(c => <p key={c.name.common}>{c.name.common}</p>)
-  } else if (countries.length === 1){
-    const details = countries[0]
-    const languages = Object.values(details.languages)
-    return <div>
-    <h1>{details.name.common}</h1>
-    <p>capital: {details.capital}</p>
-    <p>population: {details.population}</p>
+const ShowCountryStats = (countryDetails) => {
+  const languages = Object.values(countryDetails.languages)
+  return <div>
+    <h1>{countryDetails.name.common}</h1>
+    <p>capital: {countryDetails.capital}</p>
+    <p>population: {countryDetails.population}</p>
     <h2>languages</h2>
     <ul>
       {languages.map(lan => <li key={lan}>{lan}</li>)}
     </ul>
-    <img src={details.flags.png} alt="Country flag"/>
-    </div>
+    <img src={countryDetails.flags.png} alt="Country flag"/>
+  </div>
+}
+
+const ShowSearchResult = ({countries}) => {
+  const [country, setCountry] = useState('')
+
+  if (country != ''){
+    return ShowCountryStats(country)
   }
+
+  if (countries.length > 10){
+    return <p>Too many matches, be more specific</p>
+  } else if (countries.length > 1) {
+    return countries.map(c => <p key={c.name.common}>
+      {c.name.common}
+      <button onClick={()=>setCountry(c)}>pick</button>
+    </p>)
+  } else if (countries.length === 1){
+    return ShowCountryStats(countries[0])
+  }
+
   return <p>No country found</p>
 }
 
