@@ -30,12 +30,23 @@ let persons = [
     }
 ]
 
+const InfoPage = () => {
+    const infoString = `
+        <p>Phonebook has info for ${persons.length} people</p>
+        <p>${new Date().toString()}</p>`
+    return infoString
+}
+
 app.get('/', (request, response) => {
     response.send('Hi')
 })
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
+})
+
+app.get('/info', (request, response) => {
+    response.send(InfoPage())
 })
 
 const PORT = 3001
