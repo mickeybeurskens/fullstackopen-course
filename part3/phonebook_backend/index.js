@@ -49,24 +49,10 @@ const InfoPage = () => {
     return infoString
 }
 
-const getNewId = () => {
-    return Math.max(...persons.map(p => p.id)) + 1
-}
-
-const handleDoubleName = (person, response) => {
-    if (persons.find(p => p.name === person.name)){
-        return response.status(404).json({
-            error: `Cannot add person: ${person.name}, already added`
-        })
-    }
-}
-
 const handleNoNumber = (person, response) => {
-    if (!person.number){
-        return response.status(404).json({
-            error: `Number for person: ${person.number} is not a valid number`
-        })
-    }
+    return response.status(404).json({
+        error: `Number for person: ${person.number} is not a valid number`
+    })
 }
 
 app.get('/', (request, response) => {
@@ -82,14 +68,19 @@ app.get('/api/persons', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const person = request.body
     if (person.name){
-        handleNoNumber(person, response)
-        handleDoubleName(person, response)
-        const newPerson = {
-            name: person.name,
-            id: getNewId()
+        if (!person.number){
+            return handleNoNumber(person, response)
         }
-        persons = persons.concat(newPerson)
-        return response.send(newPerson)
+        const newPerson = new Person({
+            name: person.name,
+            number: person.number,
+            date: new Date().toString(),
+        })
+        console.log(newPerson)
+        newPerson.save().then(result => {
+            response.send(result)
+        })
+        return
     }
     return response.status(404).json({
         error: `Data ${person} in body should contain a 'name' attribute`
@@ -97,19 +88,26 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(p => p.id === id)
-    if (person){
-        response.json(person)
-        return
-    }
-    response.status(404).end()
+    Person.findById(request.params.id).then(person => { 
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    }).catch(error => {
+        response.status(500).end()
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(p => p.id !== id)
-    response.status(204).end()
+    const id = request.params.id
+    Person.deleteOne({id: Object(id)}).then(response =>{
+        console.log('del')
+        response.status(204).end()
+    }).catch(error => {
+        console.log('nope')
+        response.status(500).end()
+    })
 })
 
 app.get('/info', (request, response) => {
