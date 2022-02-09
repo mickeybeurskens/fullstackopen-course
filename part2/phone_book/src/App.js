@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import noteService from './services/noteService'
+import './App.css' 
 
 const ShowPerson = ({person, deletePerson}) => {
   return <p>
@@ -32,11 +33,20 @@ const AddForm = ({newName, newNumber, nameCallback, numberCallback, addPersonCal
   </>
 }
 
+const SuccesNotification = ({message}) => {
+  if (message === null){ return null }
+  console.log('heck yea', message)
+  return <div className="succes">
+    <p>{message}</p>
+  </div>
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [succesMessage, setSuccesMessage] = useState(null)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -47,6 +57,7 @@ const App = () => {
         personToAdd.name = newName
         personToAdd.number = newNumber
         noteService.update(personToAdd).then(newPerson => setPersons(person => persons.map(person => person.id === newPerson.id ? newPerson: person)))
+        setSuccesWithTimeout(`Added ${newName}`)
       }
       return
     } 
@@ -56,6 +67,13 @@ const App = () => {
       number: newNumber
     }
     noteService.create(newPerson).then(returnedPerson => setPersons(persons.concat(returnedPerson)))
+    setSuccesWithTimeout(`Added ${newName}`)
+  }
+
+  const setSuccesWithTimeout = (message) => {
+    console.log('print', message)
+    setSuccesMessage(message)
+    setTimeout(() => setSuccesMessage(null), 5000)
   }
 
   const getFilteredPersons = (persons) => {
@@ -86,6 +104,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter term={searchTerm} filterCallback={handleSearchInput}/>
+      <SuccesNotification message={succesMessage}/>
       <h1>add a new</h1>
       <AddForm name={newName} number={newNumber}
         nameCallback={handleNameInput}
