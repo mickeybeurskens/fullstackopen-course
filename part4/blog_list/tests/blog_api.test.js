@@ -52,6 +52,13 @@ describe('blog api', () => {
       .get('/api/blogs')
     expect(response.body).toHaveLength(initialBlogs.length)
   })
+  test('id keyword is correct', async () => {
+    const response = await api
+      .get('/api/blogs')
+    response.body.map(blog => {
+      expect(blog.id).toBeDefined()
+    })
+  })
 })
 
 afterAll(async () => {
