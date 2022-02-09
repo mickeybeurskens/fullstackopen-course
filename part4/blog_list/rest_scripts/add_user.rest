@@ -2,8 +2,8 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "username": "epiccrow",
-  "name": "Shane Shaneson",
-  "passwordHash": "",
-  "blogs": ["61fd1469ae449148ebca0dc9","61fd238d19e8ffb591e65c55"]
+  "username": "slowcow",
+  "name": "Ben Benson",
+  "password": "YEET",
+  "blogs": []
 } 
