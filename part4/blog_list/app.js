@@ -10,6 +10,7 @@ const app = express()
 // import {blogsRoute} from './controllers/blogs'
 const blogsRoute = require('./controllers/blogs')
 const usersRoute = require('./controllers/users')
+const loginRoute = require('./controllers/login')
 
 mongoose.connect(config.MONGO_URI)
   .then(() => {
@@ -25,6 +26,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 app.use('/api/blogs', blogsRoute)
 app.use('/api/users', usersRoute)
+app.use('/api/login', loginRoute)
 app.use(middleware.errorHandler)
 app.use(middleware.unknownEndpoint)
 
