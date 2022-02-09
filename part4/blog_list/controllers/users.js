@@ -10,6 +10,7 @@ const passWordValid = (password) => {
   if (password.length < minPassLength) {
     return `Password ${password} should be at least ${minPassLength} characters long`
   }
+  return ''
 }
 
 usersRoute.get('/', async (request, response) => {
