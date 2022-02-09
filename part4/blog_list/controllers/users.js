@@ -27,13 +27,11 @@ usersRoute.post('/', async (request, response) => {
   }
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
-  console.log('before')
   const blog = new User({
     username: body.username,
     name: body.name,
     passwordHash: passwordHash
   })
-  console.log('after')
 
   const resultBlog = await blog.save()
   response.status(201).json(resultBlog)

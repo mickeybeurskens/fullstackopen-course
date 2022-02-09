@@ -42,7 +42,7 @@ describe('users api', () => {
       .send(wrongUserName)
       .expect(400)
   })
-  test('unique', async () => {
+  test('non unique user', async () => {
     const nonUniqueUserName = {
       username: 'unique',
       name: 'Poepetypah',
@@ -59,7 +59,7 @@ describe('users api', () => {
     const badPass = {
       username: 'validname',
       name: 'Yakyak',
-      password: 'hsssa',
+      password: 'ha',
       blogs: [],
     }
     await api.post(userTestUtils.userURI)
