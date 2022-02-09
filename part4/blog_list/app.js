@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
+const middleware = require('./utils/middleware')
 const app = express()
 
 // import {blogsRoute} from './controllers/blogs'
@@ -19,6 +20,9 @@ mongoose.connect(config.MONGO_URI)
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
+app.use(middleware.requestLogger)
 app.use('/api/blogs', blogsRoute)
+app.use(middleware.errorHandler)
+app.use(middleware.unknownEndpoint)
 
 module.exports = app
