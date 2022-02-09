@@ -1,4 +1,3 @@
-const { response } = require("express")
 const express = require("express")
 const app = express()
 
@@ -52,7 +51,6 @@ const handleDoubleName = (person, response) => {
 }
 
 const handleNoNumber = (person, response) => {
-    console.log(person)
     if (!person.number){
         return response.status(404).json({
             error: `Number for person: ${person.number} is not a valid number`
@@ -70,7 +68,6 @@ app.get('/api/persons', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const person = request.body
-    console.log(typeof person.name)
     if (person.name){
         handleNoNumber(person, response)
         handleDoubleName(person, response)
