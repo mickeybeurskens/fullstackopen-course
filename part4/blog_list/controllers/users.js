@@ -14,7 +14,8 @@ const passWordValid = (password) => {
 }
 
 usersRoute.get('/', async (request, response) => {
-  const blogs = await User.find({})
+  const blogs = await User.find({}).populate('blogs',
+    { title: 1, likes: 1 })
   response.json(blogs)
 })
 

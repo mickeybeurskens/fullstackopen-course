@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "How to catch a dog",
+  "title": "How to catch a sheep",
   "author": "Me",
   "url": "https://tocatchadog.com",
   "likes": 3
