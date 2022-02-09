@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNsb3djb3ciLCJpZCI6IjYyMDE0Zjc0OTE5YWI0ZGI5OWUxN2YyYSIsImlhdCI6MTY0NDM5NDg0OX0.7ocHDArFt2M9nOHOad0VXchyXOmwHL1xzvCTW2CkJsg
 
 {
-  "title": "How to catch a sheep",
-  "author": "Me",
-  "url": "https://tocatchadog.com",
-  "likes": 3
+    "title": "How to catch a sheep",
+    "author": "Me",
+    "url": "https://tocatchadog.com",
+    "likes": 3
 }
