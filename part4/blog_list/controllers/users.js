@@ -4,13 +4,12 @@ const User = require('../models/user')
 
 const passWordValid = (password) => {
   const minPassLength = 3
-  if (password !== 'undefined'){
+  if (password === 'undefined'){
     return 'Password not valid'
   }
   if (password.length < minPassLength) {
-    return `Password ${password} should be at least ${minPassLength} characters long` 
+    return `Password ${password} should be at least ${minPassLength} characters long`
   }
-  return ''
 }
 
 usersRoute.get('/', async (request, response) => {
@@ -20,19 +19,20 @@ usersRoute.get('/', async (request, response) => {
 
 usersRoute.post('/', async (request, response) => {
   const body = request.body
-  const errorMessage = passWordValid(body.password, response)
+  const errorMessage = passWordValid(body.password)
   if (errorMessage !== '') {
-    response.status(401).json({ error: errorMessage })
+    response.status(400).json({ error: errorMessage })
     return
   }
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
-
+  console.log('before')
   const blog = new User({
     username: body.username,
     name: body.name,
     passwordHash: passwordHash
   })
+  console.log('after')
 
   const resultBlog = await blog.save()
   response.status(201).json(resultBlog)

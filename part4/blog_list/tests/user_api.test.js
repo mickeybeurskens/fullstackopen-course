@@ -20,17 +20,53 @@ describe('users api', () => {
     const usersDBAfter = await userTestUtils.getUsersFromDB(api)
     expect(usersDBAfter.length).toBe(usersDBBefore.length - 1)
   })
+  test('add single user', async () => {
+    const user = {
+      username: 'coolname4',
+      name: 'Hickson',
+      password: 'somepass',
+      blogs: [],
+    }
+    await api.post(userTestUtils.userURI)
+      .send(user)
+      .expect(201)
+  })
   test('wrong username', async () => {
     const wrongUserName = {
       username: '11',
       name: 'Poepetypah',
+      password: 'somepass',
       blogs: [],
     }
     await api.post(userTestUtils.userURI)
       .send(wrongUserName)
-      .expect(401)
-      .expect( { error: 'Password not valid' })
+      .expect(400)
   })
+  test('unique', async () => {
+    const nonUniqueUserName = {
+      username: 'unique',
+      name: 'Poepetypah',
+      password: 'somepass',
+      blogs: [],
+    }
+    await api.post(userTestUtils.userURI)
+      .send(nonUniqueUserName)
+    await api.post(userTestUtils.userURI)
+      .send(nonUniqueUserName)
+      .expect(400)
+  })
+  test('too short password', async () => {
+    const badPass = {
+      username: 'validname',
+      name: 'Yakyak',
+      password: 'hsssa',
+      blogs: [],
+    }
+    await api.post(userTestUtils.userURI)
+      .send(badPass)
+      .expect(400)
+  })
+
 })
 
 afterAll(async () => {
