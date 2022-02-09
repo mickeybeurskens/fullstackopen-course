@@ -5,6 +5,9 @@ const Button = ({clickCallback, text}) =>
 
 const Statistics = ({good, neutral, bad}) => {
   const totalClicks = good + neutral + bad
+  if (totalClicks == 0) {
+    return <p>Click one of the buttons to show statistics</p>
+  }
   return <>
     <Result text="good" amount={good}/>
     <Result text="neutral" amount={neutral}/>
