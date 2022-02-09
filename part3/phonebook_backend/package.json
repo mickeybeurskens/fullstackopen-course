@@ -1,0 +1,23 @@
+{
+  "name": "phonebook_backend",
+  "version": "1.0.0",
+  "description": "Backend for phone book application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fullstackopen"
+  ],
+  "author": "Mickey Beurskens",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "postman": "^0.2.0"
+  },
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
