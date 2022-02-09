@@ -60,9 +60,9 @@ const App = () => {
         noteService.update(personToAdd)
           .then(newPerson => {
             setPersons(person => persons.map(person => person.id === newPerson.id ? newPerson: person))
-            setSuccesWithTimeout(`Added ${newName}`)
+            setSuccesWithTimeout(`Updated ${newName}`)
           })
-          .catch(() => setErrorWithTimeout(`${newName} not present anymore in the database`))
+          .catch(error => setErrorWithTimeout(error))
       }
       return
     } 
@@ -71,8 +71,12 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    noteService.create(newPerson).then(returnedPerson => setPersons(persons.concat(returnedPerson)))
-    setSuccesWithTimeout(`Added ${newName}`)
+    noteService.create(newPerson)
+      .then(returnedPerson =>{
+        setPersons(persons.concat(returnedPerson))
+        setSuccesWithTimeout(`Added ${newName}`)
+      })
+      .catch(error => setErrorWithTimeout(error))
   }
 
   const setSuccesWithTimeout = (message) => {
@@ -80,8 +84,8 @@ const App = () => {
     setTimeout(() => setSuccesMessage(null), 5000)
   }
 
-  const setErrorWithTimeout = (message) => {
-    setErrorMessage(message)
+  const setErrorWithTimeout = (error) => {
+    setErrorMessage(error.response.data.error)
     setTimeout(() => setErrorMessage(null), 5000)
   }
 
@@ -97,6 +101,7 @@ const App = () => {
     if (delFlag){
       noteService.remove(personDel.id)
         .then(() => setPersons(persons.filter(person => person.id !== personDel.id)))
+        .catch(error => setErrorWithTimeout(error))
     }
   }
 
@@ -105,7 +110,9 @@ const App = () => {
   const handleSearchInput = (event) => setSearchTerm(event.target.value)
   
   const fetchServerData = () => {
-    noteService.getAll().then(responce => setPersons(responce))
+    noteService.getAll()
+      .then(responce => setPersons(responce))
+      .catch(error => setErrorWithTimeout(error))
   }
 
   useEffect(fetchServerData, [])
