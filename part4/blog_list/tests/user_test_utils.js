@@ -1,6 +1,8 @@
 const blogTestUtils = require('./blog_test_utils')
 const User = require('../models/user')
 
+const userURI = '/api/users'
+
 const getInitialUsers = async (api) => {
   const blogs = await blogTestUtils.getBlogs(api)
   return [
@@ -34,7 +36,7 @@ const resetUserDB = async (api) => {
 }
 
 const getUsersFromDB = async (api) => {
-  return await (await api.get('/api/users')).body
+  return await (await api.get(userURI)).body
 }
 
 const checkIfUsersPresent = (returnedUsers, referenceUsers) => {
@@ -45,8 +47,9 @@ const checkIfUsersPresent = (returnedUsers, referenceUsers) => {
 }
 
 module.exports = {
+  userURI,
   getInitialUsers,
   resetUserDB,
   getUsersFromDB,
-  checkIfUsersPresent
+  checkIfUsersPresent,
 }

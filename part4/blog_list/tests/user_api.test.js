@@ -8,11 +8,17 @@ beforeEach(async () => {
   await userTestUtils.resetUserDB(api)
 })
 
-describe('users /api/blogs', () => {
+describe('users api', () => {
   test('adding users', async () => {
-    const usersInitial = await userTestUtils.getUsersFromDB(api)
-    const usersFromDB = await userTestUtils.getInitialUsers(api)
+    const usersInitial = await userTestUtils.getInitialUsers(api)
+    const usersFromDB = await userTestUtils.getUsersFromDB(api)
     expect(usersFromDB.length).toBe(usersInitial.length)
+  })
+  test('remove users', async () => {
+    const usersDBBefore = await userTestUtils.getUsersFromDB(api)
+    await api.delete(`${userTestUtils.userURI}/${usersDBBefore[0].id}`)
+    const usersDBAfter = await userTestUtils.getUsersFromDB(api)
+    expect(usersDBAfter.length).toBe(usersDBBefore.length - 1)
   })
 })
 
