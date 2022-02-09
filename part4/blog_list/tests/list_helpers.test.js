@@ -6,7 +6,7 @@ test('Dummy test for testing testing', () => {
   expect(result).toBe(1)
 })
 
-describe('Total likes', () => {
+describe('total likes', () => {
   const listWithOneBlog = [
     {
       _id: '61fd238d19e8ffb591e65c55',
@@ -45,5 +45,38 @@ describe('Total likes', () => {
   })
   test('equals like of no blogs', () => {
     expect(listHelper.totalLikes([])).toBe(0)
+  })
+})
+
+describe('favorite blog', () => {
+  const listWithOneBlog = [
+    {
+      title: 'How to catch a dog',
+      author: 'Me',
+      likes: 3,
+    },
+  ]
+
+  const listWithMoreBlogs = [
+    {
+      title: 'How to catch a dog',
+      author: 'Me',
+      likes: 3,
+    },
+    {
+      title: 'How to catch a fish',
+      author: 'Me',
+      likes: 7,
+    },
+  ]
+
+  test('equals favorite of one blog', () => {
+    expect(listHelper.favoriteBlog(listWithOneBlog)).toEqual(listWithOneBlog[0])
+  })
+  test('equals favorite of multiple blogs', () => {
+    expect(listHelper.favoriteBlog(listWithMoreBlogs)).toEqual(listWithMoreBlogs[1])
+  })
+  test('equals favorite of no blogs', () => {
+    expect(listHelper.favoriteBlog([])).toEqual({})
   })
 })
