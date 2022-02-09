@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import noteService from './services/noteService'
 
 const ShowPerson = ({person}) => <p>{person.name}: {person.number}</p>
 
@@ -44,7 +44,7 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    setPersons(persons.concat(newPerson))
+    noteService.create(newPerson).then(returnedPerson => setPersons(persons.concat(returnedPerson)))
   }
 
   const getFilteredPersons = (persons) => {
@@ -59,9 +59,7 @@ const App = () => {
   const handleSearchInput = (event) => setSearchTerm(event.target.value)
   
   const fetchServerData = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(persons.concat(response.data)))
+    noteService.getAll().then(responce => setPersons(responce))
   }
 
   useEffect(fetchServerData, [])
