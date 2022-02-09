@@ -25,12 +25,23 @@ const initialBlogs = [
   },
 ]
 
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   const blogObjects = initialBlogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(note => note.save())
   await Promise.all(promiseArray)
 })
+
+const getBlogs = async () => {
+  const r = await api.get('/api/blogs')
+  const blogs = await r.body
+  return blogs
+}
+const getBlogsLength = async () => {
+  const blogs = await getBlogs()
+  return blogs.length
+}
 
 describe('blog api', () => {
   test('blogs are returned as json format', async () => {
@@ -40,24 +51,30 @@ describe('blog api', () => {
       .expect('Content-Type', /application\/json/)
   })
   test('first blog authors present', async () => {
-    const response = await api
-      .get('/api/blogs')
-    const authors = response.body.map(r => r.author)
+    const blogs = await getBlogs()
+    const authors = blogs.map(r => r.author)
     initialBlogs.map(b => {
       expect(authors).toContain(b.author)
     })
   })
   test('amount of blogs correct', async () => {
-    const response = await api
-      .get('/api/blogs')
-    expect(response.body).toHaveLength(initialBlogs.length)
+    expect(await getBlogsLength()).toBe(initialBlogs.length)
   })
   test('id keyword is correct', async () => {
-    const response = await api
-      .get('/api/blogs')
-    response.body.map(blog => {
+    const blogs = await getBlogs()
+    blogs.map(blog => {
       expect(blog.id).toBeDefined()
     })
+  })
+  test('create new post', async () => {
+    const newBlog = new Blog({
+      title: 'The greatest song in the world',
+      author: 'The D',
+      url: 'rocketsauce.com',
+      likes: 1000
+    })
+    await newBlog.save()
+    expect(await getBlogsLength()).toBe(initialBlogs.length + 1)
   })
 })
 
