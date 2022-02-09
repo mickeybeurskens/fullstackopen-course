@@ -49,6 +49,16 @@ describe('blog', () => {
     blogUtils.checkIfBlogsPresent(blogs, blogUtils.initialBlogs.concat(newBlog))
   })
 
+  test('create new post no token', async () => {
+    const newBlog = {
+      title: 'The greatest song in the world',
+      author: 'The D',
+      url: 'rocketsauce.com',
+      likes: 1000
+    }
+    await api.post('/api/blogs').send(newBlog).expect(401)
+  })
+
   test('no likes is zero likes', async () => {
     await Blog.deleteMany({})
     const newBlog = {

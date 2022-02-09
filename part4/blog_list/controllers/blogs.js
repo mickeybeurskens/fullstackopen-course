@@ -15,8 +15,8 @@ blogsRoute.get('/', async (request, response) => {
 })
 
 blogsRoute.post('/', async (request, response) => {
-  if (!request.user.id) {
-    return tokenError(request)
+  if (!request.user) {
+    return tokenError(response)
   }
   const user = await User.findById(request.user.id)
   const blog = new Blog({ ...request.body, user: user.id })
@@ -26,8 +26,8 @@ blogsRoute.post('/', async (request, response) => {
 })
 
 blogsRoute.delete('/:id', async (request, response) => {
-  if (!request.user.id) {
-    return tokenError(request)
+  if (!request.user) {
+    return tokenError(response)
   }
   const blogId = request.params.id
   const blog = await Blog.findById(blogId)
