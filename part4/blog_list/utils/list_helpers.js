@@ -3,7 +3,6 @@ function argMax(array) {
 }
 
 const dummy = () => {
-  // console.log(blogs)
   return 1
 }
 
