@@ -20,6 +20,17 @@ describe('users api', () => {
     const usersDBAfter = await userTestUtils.getUsersFromDB(api)
     expect(usersDBAfter.length).toBe(usersDBBefore.length - 1)
   })
+  test('wrong username', async () => {
+    const wrongUserName = {
+      username: '11',
+      name: 'Poepetypah',
+      blogs: [],
+    }
+    await api.post(userTestUtils.userURI)
+      .send(wrongUserName)
+      .expect(401)
+      .expect( { error: 'Password not valid' })
+  })
 })
 
 afterAll(async () => {
