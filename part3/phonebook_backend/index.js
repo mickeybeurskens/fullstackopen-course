@@ -1,6 +1,7 @@
 const { request } = require("express")
 const express = require("express")
 const cors = require("cors")
+const Person = require('./models/mongo')
 var morgan = require('morgan')
 const app = express()
 
@@ -73,7 +74,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(result => {  
+        response.json(result)
+    })
 })
 
 app.post('/api/persons', (request, response) => {
