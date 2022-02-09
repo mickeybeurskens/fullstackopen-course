@@ -8,18 +8,20 @@ const Statistics = ({good, neutral, bad}) => {
   if (totalClicks == 0) {
     return <p>Click one of the buttons to show statistics</p>
   }
-  return <>
-    <Result text="good" amount={good}/>
-    <Result text="neutral" amount={neutral}/>
-    <Result text="bad" amount={bad}/>
-    <Result text="all" amount={totalClicks}/>
-    <Result text="average" amount={good-bad}/>
-    <ResultPercent text="positive" amount={good/totalClicks}/>
-  </>
+  return <table>
+    <tbody>  
+      <StatisticLine text="good" amount={good}/>
+      <StatisticLine text="neutral" amount={neutral}/>
+      <StatisticLine text="bad" amount={bad}/>
+      <StatisticLine text="all" amount={totalClicks}/>
+      <StatisticLine text="average" amount={good-bad}/>
+      <StatisticLinePercent text="positive" amount={good/totalClicks}/>
+    </tbody>
+  </table>
 }
 
-const Result = ({text, amount}) => <p>{text} {amount}</p>
-const ResultPercent = ({text, amount}) => <p>{text} {amount} %</p>
+const StatisticLine = ({text, amount}) => <tr><td>{text}</td><td>{amount}</td></tr>
+const StatisticLinePercent = ({text, amount}) => <tr><td>{text}</td><td>{amount} %</td></tr>
 
 const App = () => {
   // save clicks of each button to its own state
