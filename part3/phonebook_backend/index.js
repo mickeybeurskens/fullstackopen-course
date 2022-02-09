@@ -2,6 +2,8 @@ const { response } = require("express")
 const express = require("express")
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         "name": "Arto Hellas",
@@ -37,12 +39,51 @@ const InfoPage = () => {
     return infoString
 }
 
+const getNewId = () => {
+    return Math.max(...persons.map(p => p.id)) + 1
+}
+
+const handleDoubleName = (person, response) => {
+    if (persons.find(p => p.name === person.name)){
+        return response.status(404).json({
+            error: `Cannot add person: ${person.name}, already added`
+        })
+    }
+}
+
+const handleNoNumber = (person, response) => {
+    console.log(person)
+    if (!person.number){
+        return response.status(404).json({
+            error: `Number for person: ${person.number} is not a valid number`
+        })
+    }
+}
+
 app.get('/', (request, response) => {
     response.send('Hi')
 })
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
+})
+
+app.post('/api/persons', (request, response) => {
+    const person = request.body
+    console.log(typeof person.name)
+    if (person.name){
+        handleNoNumber(person, response)
+        handleDoubleName(person, response)
+        const newPerson = {
+            name: person.name,
+            id: getNewId()
+        }
+        persons = persons.concat(newPerson)
+        return response.send(newPerson)
+    }
+    return response.status(404).json({
+        error: `Data ${person} in body should contain a 'name' attribute`
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
