@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
 
+const ShowWeather = ({countries}) => {
+  if (countries.length === 1){
+    return <div>
+      <h1>Weather in {countries[0].name.common}</h1>
+    </div>
+  }
+  return <></>
+}
+
 const ShowCountryStats = (countryDetails) => {
   const languages = Object.values(countryDetails.languages)
   return <div>
@@ -15,19 +24,13 @@ const ShowCountryStats = (countryDetails) => {
   </div>
 }
 
-const ShowSearchResult = ({countries}) => {
-  const [country, setCountry] = useState('')
-
-  if (country != ''){
-    return ShowCountryStats(country)
-  }
-
+const ShowSearchResult = ({countries, setSearchField}) => {
   if (countries.length > 10){
     return <p>Too many matches, be more specific</p>
   } else if (countries.length > 1) {
     return countries.map(c => <p key={c.name.common}>
       {c.name.common}
-      <button onClick={()=>setCountry(c)}>pick</button>
+      <button onClick={()=>setSearchField(c.name.common)}>pick</button>
     </p>)
   } else if (countries.length === 1){
     return ShowCountryStats(countries[0])
@@ -37,7 +40,7 @@ const ShowSearchResult = ({countries}) => {
 }
 
 const App = () => {
-  const [country, setCountry] = useState('')
+  const [searchField, setSearchField] = useState('')
   const [countryData, setAllCountries] = useState([])
 
   const getCountry = () => {
@@ -47,17 +50,18 @@ const App = () => {
   }
   useEffect(getCountry, [])
 
-  const changeCountry = (event) => setCountry(event.target.value)
+  const searchInput = (event) => setSearchField(event.target.value)
   const getFilteredCountries = () => {
-    if (country.length!==0){
-      return countryData.filter((entry) =>  entry.name.common.match(country))
+    if (searchField.length!==0){
+      return countryData.filter((entry) =>  entry.name.common.match(searchField))
     } 
     return countryData
   }
 
   return <div>
-    <p>Find countries: <input value={country} onChange={changeCountry}/></p>
-    <ShowSearchResult countries={getFilteredCountries()}/>
+    <p>Find countries: <input value={searchField} onChange={searchInput}/></p>
+    <ShowSearchResult countries={getFilteredCountries()} setSearchField={setSearchField}/>
+    <ShowWeather countries={getFilteredCountries()}/>
   </div>
 }
 
