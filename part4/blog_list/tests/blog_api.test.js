@@ -47,20 +47,24 @@ describe('blog api', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
+
   test('first blog authors present', async () => {
     const blogs = await (await api.get('/api/blogs')).body
     checkIfContains(blogs, initialBlogs)
   })
+
   test('amount of blogs correct', async () => {
     const blogs = await (await api.get('/api/blogs')).body
     expect(blogs.length).toBe(initialBlogs.length)
   })
+
   test('id keyword is correct', async () => {
     const blogs = await (await api.get('/api/blogs')).body
     blogs.map(blog => {
       expect(blog.id).toBeDefined()
     })
   })
+
   test('create new post', async () => {
     const newBlog = new Blog({
       title: 'The greatest song in the world',
@@ -72,6 +76,18 @@ describe('blog api', () => {
     const blogs = await (await api.get('/api/blogs')).body
     expect(blogs.length).toBe(initialBlogs.length + 1)
     checkIfContains(blogs, initialBlogs.concat(newBlog))
+  })
+
+  test('no likes is zero likes', async () => {
+    await Blog.deleteMany({})
+    const newBlog = new Blog({
+      title: 'No likes?',
+      author: 'Unlickable',
+      url: 'unluckyluck.com'
+    })
+    newBlog.save()
+    const blogs = await(await api.get('/api/blogs')).body
+    expect(blogs[0].likes).toBe(0)
   })
 })
 
