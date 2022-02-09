@@ -35,13 +35,13 @@ describe('blog /api/blogs', () => {
   })
 
   test('create new post', async () => {
-    const newBlog = new Blog({
+    const newBlog = {
       title: 'The greatest song in the world',
       author: 'The D',
       url: 'rocketsauce.com',
       likes: 1000
-    })
-    await newBlog.save()
+    }
+    await api.post('/api/blogs').send(newBlog)
     const blogs = await testUtils.getBlogs(api)
     expect(blogs.length).toBe(testUtils.initialBlogs.length + 1)
     testUtils.checkIfBlogsPresent(blogs, testUtils.initialBlogs.concat(newBlog))
@@ -49,12 +49,12 @@ describe('blog /api/blogs', () => {
 
   test('no likes is zero likes', async () => {
     await Blog.deleteMany({})
-    const newBlog = new Blog({
+    const newBlog = {
       title: 'No likes?',
       author: 'Unlickable',
       url: 'unluckyluck.com'
-    })
-    await newBlog.save()
+    }
+    await api.post('/api/blogs').send(newBlog)
     const blogs = await testUtils.getBlogs(api)
     expect(blogs[0].likes).toBe(0)
   })
