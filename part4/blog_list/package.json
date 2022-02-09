@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "jest": "jest --verbose"
   },
   "keywords": [
     "Fullstackopen"
@@ -19,8 +20,12 @@
     "express": "^4.17.2"
   },
   "devDependencies": {
-    "eslint": "^8.8.0",
+    "eslint": "^8.8.0", 
+    "jest": "^27.4.7",
     "mongoose": "^6.2.0",
     "nodemon": "^2.0.15"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
