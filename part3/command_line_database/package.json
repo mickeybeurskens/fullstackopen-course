@@ -1,0 +1,17 @@
+{
+  "name": "command_line_database",
+  "version": "1.0.0",
+  "description": "Command line tool to connect with MongoDB",
+  "main": "mongo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Fullstackopen"
+  ],
+  "author": "Mickey Beurskens",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^6.1.10"
+  }
+}
