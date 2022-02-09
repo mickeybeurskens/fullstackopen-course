@@ -85,9 +85,18 @@ describe('blog api', () => {
       author: 'Unlickable',
       url: 'unluckyluck.com'
     })
-    newBlog.save()
+    await newBlog.save()
     const blogs = await(await api.get('/api/blogs')).body
     expect(blogs[0].likes).toBe(0)
+  })
+
+  test('response 400 on no url or title', async () => {
+    const faultyBlog = {
+      id: 1,
+      author: 'NotExisting'
+    }
+    const response = await api.post('/api/blogs', faultyBlog)
+    expect(await response.status).toBe(400)
   })
 })
 
