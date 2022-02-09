@@ -11,7 +11,11 @@ const create = (note) => {
 }
 
 const update = (id, note) => {
-    return axios.put(`baseUrl/${id}`, note).then(responce => responce.data)
+    return axios.put(`${baseUrl}/${id}`, note).then(responce => responce.data)
 }
 
-export default {getAll, create, update}
+const remove = (id) => {
+    return axios.delete(`${baseUrl}/${id}`).then(responce => responce.data)
+}
+
+export default {getAll, create, update, remove}

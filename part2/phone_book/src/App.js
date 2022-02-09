@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import noteService from './services/noteService'
 
-const ShowPerson = ({person}) => <p>{person.name}: {person.number}</p>
+const ShowPerson = ({person, deletePerson}) => {
+  return <p>
+    {person.name}: {person.number}
+    <button onClick={() => deletePerson(person)}>delete</button>
+  </p>
+  }
 
-const ShowPeople = ({persons}) => {
+const ShowPeople = ({persons, deletePerson}) => {
   return <>
-    {persons.map(person => <ShowPerson key={person.name} person={person}/>)}
+    {persons.map(person => <ShowPerson key={person.name} person={person} deletePerson={deletePerson}/>)}
   </>
 }
 
@@ -54,6 +59,13 @@ const App = () => {
     return persons
   }
 
+  const deletePerson = (personDel) => {
+    const delFlag = window.confirm(`Would you like to delete ${personDel.name}?`)
+    if (delFlag){
+      noteService.remove(personDel.id).then(() => setPersons(persons.filter(person => person.id != personDel.id)))
+    }
+  }
+
   const handleNameInput = (event) => setNewName(event.target.value) 
   const handleNumberInput = (event) => setNewNumber(event.target.value)
   const handleSearchInput = (event) => setSearchTerm(event.target.value)
@@ -75,7 +87,7 @@ const App = () => {
         addPersonCallback={addPerson}
       />
       <h2>Numbers</h2>
-      <ShowPeople persons={getFilteredPersons(persons)}/>
+      <ShowPeople persons={getFilteredPersons(persons)} deletePerson={deletePerson}/>
     </div>
   )
 }
