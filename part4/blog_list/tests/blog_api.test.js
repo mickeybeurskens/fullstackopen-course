@@ -43,6 +43,13 @@ const getBlogsLength = async () => {
   return blogs.length
 }
 
+const checkIfContains = (returnedBlogs, referenceBlogs) => {
+  const authors = returnedBlogs.map(r => r.author)
+  referenceBlogs.map(b => {
+    expect(authors).toContain(b.author)
+  })
+}
+
 describe('blog api', () => {
   test('blogs are returned as json format', async () => {
     await api
@@ -52,10 +59,7 @@ describe('blog api', () => {
   })
   test('first blog authors present', async () => {
     const blogs = await getBlogs()
-    const authors = blogs.map(r => r.author)
-    initialBlogs.map(b => {
-      expect(authors).toContain(b.author)
-    })
+    checkIfContains(blogs, initialBlogs)
   })
   test('amount of blogs correct', async () => {
     expect(await getBlogsLength()).toBe(initialBlogs.length)
@@ -75,6 +79,7 @@ describe('blog api', () => {
     })
     await newBlog.save()
     expect(await getBlogsLength()).toBe(initialBlogs.length + 1)
+    checkIfContains(await getBlogs(), initialBlogs.concat(newBlog))
   })
 })
 
