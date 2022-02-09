@@ -76,7 +76,6 @@ app.post('/api/persons', (request, response) => {
             number: person.number,
             date: new Date().toString(),
         })
-        console.log(newPerson)
         newPerson.save().then(result => {
             response.send(result)
         })
@@ -100,12 +99,10 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    Person.deleteOne({id: Object(id)}).then(response =>{
-        console.log('del')
+    const id = Object(request.params.id)
+    Person.deleteOne({ _id: id}).then(person =>{
         response.status(204).end()
     }).catch(error => {
-        console.log('nope')
         response.status(500).end()
     })
 })
