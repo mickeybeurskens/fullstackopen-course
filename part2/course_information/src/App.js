@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import Course from './components/Course'
 
 const AllCourses = ({courses}) => {
