@@ -8,6 +8,23 @@ const ShowPeople = ({persons}) => {
   </>
 }
 
+const Filter = ({term, filterCallback}) => {
+  return <p>
+    Filter: <input value={term} onChange={filterCallback}/>
+  </p>
+} 
+
+const AddForm = ({newName, newNumber, nameCallback, numberCallback, addPersonCallback}) => {
+  return <>
+    <form onSubmit={addPersonCallback}>
+      <div>name: <input value={newName} onChange={nameCallback}/></div>
+      <div>phone number: <input value={newNumber} onChange={numberCallback}/></div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  </>
+}
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -20,7 +37,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const AddPerson = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
     if (persons.find(person => person.name === newName)) {
       alert(`${newName} is already added to this phonebook silly`)
@@ -48,15 +65,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <p>Filter: <input value={searchTerm} onChange={handleSearchInput}/></p>
+      <Filter term={searchTerm} filterCallback={handleSearchInput}/>
       <h1>add a new</h1>
-      <form onSubmit={AddPerson}>
-        <div>name: <input value={newName} onChange={handleNameInput}/></div>
-        <div>phone number: <input value={newNumber} onChange={handleNumberInput}/></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <AddForm name={newName} number={newNumber}
+        nameCallback={handleNameInput}
+        numberCallback={handleNumberInput}
+        addPersonCallback={addPerson}
+      />
       <h2>Numbers</h2>
       <ShowPeople persons={getFilteredPersons(persons)}/>
     </div>
