@@ -8,6 +8,7 @@ const CurrentVotes = ({points, voteIndex}) => <p>has {points[voteIndex]} votes</
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+
 function argMax(arr) {
   if (arr.length === 0) {
       return -1;
