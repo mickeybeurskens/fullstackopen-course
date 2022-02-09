@@ -38,14 +38,8 @@ blogsRoute.delete('/:id', async (request, response) => {
 })
 
 blogsRoute.put('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
   const id = request.params.id
-  if (!decodedToken.id || decodedToken.id !== id) {
-    return response.status(401).json({
-      error: 'token missing or invalid'
-    })
-  }
-  const likes = { likes: request.body.blog.likes }
+  const likes = { likes: request.body.likes }
   const newBlog = await Blog.findByIdAndUpdate(id, likes)
   response.json(newBlog)
 })

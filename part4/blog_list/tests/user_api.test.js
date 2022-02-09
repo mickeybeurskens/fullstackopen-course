@@ -5,7 +5,7 @@ const userTestUtils = require('./user_test_utils')
 const api = supertest(app)
 
 beforeEach(async () => {
-  await userTestUtils.resetUserDB(api)
+  await userTestUtils.resetUserDB()
 })
 
 describe('users api', () => {

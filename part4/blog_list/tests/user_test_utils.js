@@ -1,22 +1,20 @@
-const blogTestUtils = require('./blog_test_utils')
 const User = require('../models/user')
 
 const userURI = '/api/users'
 
-const getInitialUsers = async (api) => {
-  const blogs = await blogTestUtils.getBlogs(api)
+const getInitialUsers = async () => {
   return [
     {
       name: 'bestcrow',
       username: 'Paul Paulson',
       passwordHash: 'placeholder',
-      blogs: [blogs[0].id]
+      blogs: []
     },
     {
       name: 'worstcat',
       username: 'Pakopako',
       passwordHash: 'placeholder',
-      blogs: [blogs[1].id, blogs[2].id]
+      blogs: []
     },
     {
       name: 'mediummongoose',
@@ -27,9 +25,9 @@ const getInitialUsers = async (api) => {
   ]
 }
 
-const resetUserDB = async (api) => {
+const resetUserDB = async () => {
   await User.deleteMany({})
-  const users = await getInitialUsers(api)
+  const users = await getInitialUsers()
   const userObjects = users.map(user => new User(user))
   const promiseArray = userObjects.map(p => p.save())
   await Promise.all(promiseArray)
@@ -46,10 +44,25 @@ const checkIfUsersPresent = (returnedUsers, referenceUsers) => {
   })
 }
 
+const addUserToDB = async (api, user) => {
+  await api.post('/api/users')
+    .send(user)
+    .expect(201)
+}
+
+const getUserLoginResponse = async (api, user) => {
+  const loginResponse = await api.post('/api/login')
+    .send(user)
+    .expect(200)
+  return loginResponse.body
+}
+
 module.exports = {
   userURI,
   getInitialUsers,
   resetUserDB,
   getUsersFromDB,
+  addUserToDB,
   checkIfUsersPresent,
+  getUserLoginResponse
 }

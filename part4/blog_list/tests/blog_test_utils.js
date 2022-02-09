@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const userUtils = require('./user_test_utils')
 
 const initialBlogs = [
   {
@@ -39,9 +40,30 @@ const resetBlogDB = async () => {
   await Promise.all(promiseArray)
 }
 
+const getNewUserObject = () => {
+  return {
+    username: 'thenewhek',
+    name: 'Heckman',
+    password: 'logical'
+  }
+}
+
+const addBlog = async (api, blog, user) => {
+  await userUtils.addUserToDB(api, user)
+  const loginInfo = await userUtils.getUserLoginResponse(api, user)
+  return await api.post('/api/blogs').send(blog)
+    .set({ Authorization: `bearer ${loginInfo.token}` })
+}
+
+const addBlogWithNewUser = async (api, blog) => {
+  return await addBlog(api, blog, getNewUserObject())
+}
+
 module.exports = {
   initialBlogs,
   getBlogs,
   checkIfBlogsPresent,
   resetBlogDB,
+  addBlog,
+  addBlogWithNewUser
 }
