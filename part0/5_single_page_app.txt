@@ -1,0 +1,12 @@
+title Load Single Page Application
+
+Browser->Server: GET request for page exampleapp/spa
+Server-->Browser: spa.html
+Browser->Server: GET request for stylesheet
+Server-->Browser: main.css
+Browser->Server: GET request for javascript file
+Server-->Browser: spa.js
+note over Browser: Javascript is executed.
+Browser->Server: GET request for JSON data file.
+Server-->Browser: data.json
+note over Browser: Javascript is used to set a\ncallbacks. The notes are (re)drawn.

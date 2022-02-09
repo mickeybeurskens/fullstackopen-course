@@ -1,0 +1,7 @@
+title Add Note Single Page Application
+
+note over Browser: User fills textbox and submits.\nform.onsubmit callback triggers.\ntext and date-time added to notes\narray. Notes are redrawn.
+
+Browser->Server: POST 201 with note text and date
+note over Server: Note data stored on server.
+Server-->Browser: Message on success/fail in JSON format

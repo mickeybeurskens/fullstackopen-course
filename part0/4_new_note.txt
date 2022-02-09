@@ -1,0 +1,17 @@
+title Submitting Notes
+
+note over Browser: User enters a note in the HTLM\nform text box and clicks the \n"submit" button.
+Browser->Server: POST request to exampleapp/notes with text
+note over Server: Read text from post request,\nadd to notes array with current\n date and time. Refresh page.
+Server-->Browser: Code 302 - URL Redirect to notes.html
+Browser->Server: GET request for page notes.html
+Server-->Browser: notes.html
+Browser->Server: GET request for stylesheet
+Server-->Browser: main.css
+Browser->Server: GET request for javascript file
+Server-->Browser: main.js
+note over Browser: Javascript is executed.
+Browser->Server: GET request for JSON data file.
+note over Server: Now returns updated list of notes.
+Server-->Browser: data.json
+note over Browser: Javascript callback is triggered\nand render function is called.\nNotes are rendered on the page.
