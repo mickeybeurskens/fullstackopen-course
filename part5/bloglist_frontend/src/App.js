@@ -16,9 +16,17 @@ const App = () => {
     )  
   }, [])
 
+  const handleLogin = (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+  }
+
   return (
     <div>
-      {user === null ? LoginForm() : BlogForm()}
+      {user === null ? 
+      LoginForm({username, password, handleLogin,
+        setUserName, setPassword}) :
+      BlogForm()}
       <BlogSection blogs={blogs}/>
     </div>
   )
