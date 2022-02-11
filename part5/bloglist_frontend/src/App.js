@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import BlogSection from './components/Blog'
-import blogService from './services/blogs'
 import LoginForm from './components/Login'
 import BlogForm from './components/BlogForm'
+import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,9 +17,18 @@ const App = () => {
     )  
   }, [])
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('logging in with', username, password)
+    try {
+      const userReturned = await loginService.login({
+        username, password
+      })
+      setUser(userReturned)
+      setUserName('')
+      setPassword('')
+    } catch (exception) {
+
+    }
   }
 
   return (

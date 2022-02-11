@@ -2,7 +2,6 @@ import React from "react";
 
 const LoginForm = ({username, password,
   handleLogin, setUserName, setPassword}) => {
-    console.log('passform', username)
   return (
     <div>
       <form onSubmit={handleLogin}>
