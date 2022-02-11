@@ -37,7 +37,7 @@ const App = () => {
       LoginForm({username, password, handleLogin,
         setUserName, setPassword}) :
       BlogForm()}
-      <BlogSection blogs={blogs}/>
+      <BlogSection blogs={blogs} user={user}/>
     </div>
   )
 }
